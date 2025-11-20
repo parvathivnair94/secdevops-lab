@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2026 Bjoern Kimminich & the OWASP Juice Shop contributors.
+ * Copyright (c) 2014-2025 Bjoern Kimminich & the OWASP Juice Shop contributors.
  * SPDX-License-Identifier: MIT
  */
 
@@ -119,7 +119,19 @@ function loadHint (hint: ChallengeHint): HTMLElement {
   const picture = createElement('img', pictureStyles, { src: '/assets/public/images/hackingInstructor.png' })
 
   const textBox = createElement('span', { flexGrow: '2' })
-  textBox.innerHTML = snarkdown(hint.text)
+// dedicated HTML escaping function
+function escapeHtml(unsafe: string): string {
+  return unsafe
+    .replace(/&/g, '&amp;')  // Escape & first to avoid double escaping
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#x27;')
+    .replace(/\//g, '&#x2F;');
+}
+
+// New function
+textBox.innerHTML = snarkdown(escapeHtml(hint.text))
 
   const cancelButtonStyles = {
     textDecoration: 'none',
@@ -197,8 +209,8 @@ export async function startHackingInstructorFor (challengeName: string): Promise
       element.scrollIntoView()
     }
 
-
-    const continueConditions: Promise<void | unknown>[] = [
+    // eslint-disable-next-line @typescript-eslint/no-invalid-void-type
+    const continueConditions: Array<Promise<void | unknown>> = [
       hint.resolved()
     ]
 
@@ -216,4 +228,3 @@ export async function startHackingInstructorFor (challengeName: string): Promise
     element.remove()
   }
 }
-
