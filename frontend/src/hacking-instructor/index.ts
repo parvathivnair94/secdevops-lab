@@ -119,7 +119,12 @@ function loadHint (hint: ChallengeHint): HTMLElement {
   const picture = createElement('img', pictureStyles, { src: '/assets/public/images/hackingInstructor.png' })
 
   const textBox = createElement('span', { flexGrow: '2' })
-  textBox.innerHTML = snarkdown(hint.text)
+  textBox.innerHTML = snarkdown(hint.text
+  .replace(/</g, '&lt;')    // Escape < to prevent tag opening
+  .replace(/>/g, '&gt;')    // Escape > to prevent tag closing  
+  .replace(/"/g, '&quot;')  // Escape " to prevent attribute injection
+  .replace(/'/g, '&#x27;')  // Escape ' to prevent attribute injection
+  .replace(/\//g, '&#x2F;')) // Escape / to prevent closing tags
 
   const cancelButtonStyles = {
     textDecoration: 'none',
