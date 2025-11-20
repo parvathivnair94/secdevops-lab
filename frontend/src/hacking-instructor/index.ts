@@ -119,19 +119,8 @@ function loadHint (hint: ChallengeHint): HTMLElement {
   const picture = createElement('img', pictureStyles, { src: '/assets/public/images/hackingInstructor.png' })
 
   const textBox = createElement('span', { flexGrow: '2' })
-// dedicated HTML escaping function
-function escapeHtml(unsafe: string): string {
-  return unsafe
-    .replace(/&/g, '&amp;')  // Escape & first to avoid double escaping
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#x27;')
-    .replace(/\//g, '&#x2F;');
-}
 
-// New function
-textBox.innerHTML = snarkdown(escapeHtml(hint.text))
+textBox.textContent = hint.text
 
   const cancelButtonStyles = {
     textDecoration: 'none',
