@@ -119,12 +119,19 @@ function loadHint (hint: ChallengeHint): HTMLElement {
   const picture = createElement('img', pictureStyles, { src: '/assets/public/images/hackingInstructor.png' })
 
   const textBox = createElement('span', { flexGrow: '2' })
-  textBox.innerHTML = snarkdown(hint.text
-  .replace(/</g, '&lt;')    // Escape < to prevent tag opening
-  .replace(/>/g, '&gt;')    // Escape > to prevent tag closing  
-  .replace(/"/g, '&quot;')  // Escape " to prevent attribute injection
-  .replace(/'/g, '&#x27;')  // Escape ' to prevent attribute injection
-  .replace(/\//g, '&#x2F;')) // Escape / to prevent closing tags
+  // Create a dedicated HTML escaping function
+function escapeHtml(unsafe: string): string {
+  return unsafe
+    .replace(/&/g, '&amp;')  // Escape & first to avoid double escaping
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#x27;')
+    .replace(/\//g, '&#x2F;');
+}
+
+// In the loadHint function, replace the existing escaping code with:
+textBox.innerHTML = snarkdown(escapeHtml(hint.text))
 
   const cancelButtonStyles = {
     textDecoration: 'none',
