@@ -3,6 +3,23 @@ COPY . /juice-shop
 WORKDIR /juice-shop
 RUN npm i -g typescript ts-node
 RUN npm install --omit=dev --unsafe-perm
+
+# UPDATE ALL VULNERABLE PACKAGES
+RUN npm install crypto-js
+RUN npm install jsonwebtoken
+RUN npm install lodash
+RUN npm install vm2
+RUN npm install deep-extend
+RUN npm install form-data
+RUN npm install minimist
+
+# REMOVE marsdb completely
+RUN npm uninstall marsdb --save || true
+
+# Run audit fix twice to address and remove all detected vulnerabilities
+RUN npm audit fix --force --omit=dev || true
+RUN npm audit fix --force --omit=dev || true
+
 RUN npm dedupe --omit=dev
 RUN rm -rf frontend/node_modules
 RUN rm -rf frontend/.angular
